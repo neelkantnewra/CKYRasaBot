@@ -1,0 +1,31 @@
+<html>
+    <body>
+        <script>!(function () {
+          window.localStorage.clear()
+            let e = document.createElement("script"),
+              t = document.head || document.getElementsByTagName("head")[0];
+            (e.src =
+              "https://cdn.jsdelivr.net/npm/rasa-webchat/lib/index.js"),
+              (e.async = !0),
+              (e.onload = () => {
+                window.WebChat.default(
+                  {
+                    initPayload:"/greet",
+                    customData: { language: "en" },
+                    socketUrl: "http://localhost:5005",
+                    onSocketEvent:{
+                      'bot_uttered':()=>console.log('bot said someting'),
+                      'connect':()=>console.log('connected'),
+                      'disconnect':()=>console.log('disconnect')
+
+                    }
+                    // add other props here
+                  },
+                  null
+                );
+              }),
+              t.insertBefore(e, t.firstChild);
+          })();
+          </script>
+    </body>
+</html>

@@ -26,15 +26,16 @@ from dotenv import load_dotenv
 from pathlib import Path
 import socketio
 from time import sleep # just used for timing the messages
+
 #load environment variable
 
-env_path = Path(".")/".env"
-load_dotenv(dotenv_path = env_path)
+# env_path = Path(".")/".env"
+# load_dotenv(dotenv_path = env_path)
 
 # socket programming
 
 sio = socketio.Client()
-# sio.wait()
+# sio.wait()  # if you want server to always connected with client
 @sio.event
 def connect():
     print('Connection established with server to send message data.')
@@ -57,25 +58,18 @@ def disconnect():
 
 # while True:
 #     socket.on('message', message_handler)
+
+#<=======================================Problem to be worked on ================================>
+
+# to use this mssg which we are getting from admin and dispatch it to our user in chatbot interface
+# if we are able to get the mssg out side the message_handler and used it in Action Default fallback may be we can solve the issue
 @sio.on('message')
 def message_handler(mssg):
-    # dispatcher = CollectingDispatcher()
-    # dispatcher.utter_message(text=msg["message"])
-    # print(mssg)
-    # global my_message
-    # my_message = mssg
-    # sio.disconnect()
-    # sio.connect("http://localhost:5005")
-    # sio.emit('message',mssg)
     print(mssg)
     
-        # socket.emit('message', msg)
-    # CollectingDispatcher.utter_message(text = msg['message'])
-
-# def show(key,msg):
-#     if key == Key.ENTER:
-#         send_msg(msg)
 sio.connect('http://localhost:3000')
+
+#<============================== Action for Human handoff ========================>
 
 class ActionHumanHandoff(Action):
     # global my_message
@@ -101,8 +95,22 @@ class ActionHumanHandoff(Action):
         # dispatcher.utter_message(my_message)
 
         return []
+    
+#<==============================================================================================>
+
 
 sio.on('message', message_handler) 
+
+#<====================== Action using fall back policy ==========================================>
+'''Currently i am using fallback policy which sometimes lead to open the bot conversation if it find the
+the intent prediction above the threshold.
+
+Need to be solved using the slot 
+
+- suppose we make a slot /handoff with initial value false, when we have a human handoff action we will set the slot to true 
+- Now since our slot is true we can make a policy HumanHandoff with highest priority and set the policy action to actionfallback.
+Now every message will come in Action fall back and we will continue all our message to the admin.
+'''
 
 class ActionDefaultFallback(Action):
     """Executes the fallback action and goes back to the previous state

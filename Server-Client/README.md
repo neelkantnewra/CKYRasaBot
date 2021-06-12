@@ -6,6 +6,14 @@
 - `unzip the node module`
 -  In terminal `npm run dev`
 
+## if facing issue 
+
+- `npm init -y`
+- `npm install express`
+- `npm install nodemon -D`
+- `npm install socket.io`
+`
+
 
 ## Open the chat interface in browser
 
